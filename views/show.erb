@@ -1,0 +1,33 @@
+<h2>
+  メモ詳細ページ
+</h2>
+<div class='text-center'>
+  <% @json_data["memo"].each do |memo| %>
+    <% memo.each do |k, v| %>
+      <% if k == @id[0] %>
+        <p>タイトル:<%= v["title"] %></p>
+        <p>内容: <%= v["content"] %></p>
+        <p>作成日: <%= v["date"] %></P>
+      <% end %>
+    <% end %>
+  <% end %>
+</div>
+
+<section class="container">
+<div class="row">
+  <form action="/<%= @id[0] %>/edit" method="post" class="col-10 text-right">
+  <div calass='form-control'>
+    <input type="hidden" name="_method" value="patch">
+    <button class="btn btn-success inline-block" type="submit">編集</button>
+  </div>
+  </form>
+
+  <form action="/delete/<%= @id[0] %>" method="post" class="col-2">
+    <div calass='form-control'>
+      <input type="hidden" name="_method" value="delete">
+      <button class="btn btn-success" type="submit">削除</button>
+    </div>
+  </form>
+  </section>
+</div>
+<p><a href="http://localhost:4567/">トップページへ</a></p>

@@ -1,0 +1,12 @@
+<div class='text-center'>
+  <% @json_data["memo"].each do |memo| %>
+    <% memo.each do |k, v| %>
+      <p>タイトル:<a href="/show/<%= k %>"> <%= v["title"] %></a></p>
+      <p class='mb-5'><%= "作成日:#{v["date"]}" %></p>
+    <% end %>
+  <% end %>
+</div>
+
+<form action="/new" method="get" class="text-right w-75">
+  <button class="btn btn-success" type="submit">作成する</button>
+</form>

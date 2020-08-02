@@ -1,0 +1,23 @@
+<div class="text-center">
+  <h2>新規作成ページ</h2>
+</div>
+<p><a href="http://localhost:4567/">トップページへ</a></p>
+
+<section class="w-100">
+<div class="row justify-content-center">
+  <form action="/create" method="post" class="w-75">
+    <div class = " form-group">
+      <label for = "text1">タイトル</label>
+      <input type = "text" name="title" id = "text1" class = " form-control"  placeholder="title">
+    </div>
+
+    <div class = " form-group">
+      <label for = "textarea1">内容</label>
+      <textarea id = "textarea1" name="content" class = "form-control" placeholder="content" rows="10"></textarea>
+    </div>
+
+    <button class="btn btn-success" type="submit">保存</button>
+  </form>
+</div>
+</section>
+
