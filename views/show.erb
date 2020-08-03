@@ -6,7 +6,9 @@
     <% memo.each do |k, v| %>
       <% if k == @id[0] %>
         <p>タイトル:<%= v["title"] %></p>
-        <p>内容: <%= v["content"] %></p>
+        <p class="d-inline-block text-left">
+          内容: <%= v["content"].gsub(/\n/, '<br/>') %>
+        </p>
         <p>作成日: <%= v["date"] %></P>
       <% end %>
     <% end %>
