@@ -6,7 +6,7 @@ require "date"
 
 class JsonFile
   def self.json_to_hash
-    @json_data = File.open("views/memo.json") do |file|
+    File.open("views/memo.json") do |file|
       JSON.load(file)
     end
   end
