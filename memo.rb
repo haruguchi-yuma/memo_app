@@ -11,9 +11,9 @@ class JsonFile
     end
   end
 
-  def self.hash_to_json
+  def self.hash_to_json(hash)
     File.open("views/memo.json", "w") do |file| 
-      JSON.dump(@json_data, file) 
+      JSON.dump(hash, file) 
     end
   end
 end
@@ -43,9 +43,9 @@ post '/create' do
   id = SecureRandom.uuid
   add_data = {"#{id}" => {"title" => @title, "content" => @content, "date" => @date.strftime("%Y年 %m月 %d日")}} 
   @json_data["memo"] << add_data 
-
-  JsonFile.hash_to_json
-
+  
+  JsonFile.hash_to_json(@json_data)
+  
   erb :top
 end
 
@@ -57,8 +57,8 @@ delete '/delete/*' do
     memo.include?(@id[0])
   end
 
-  JsonFile.hash_to_json
-  
+  JsonFile.hash_to_json(@json_data)
+
   redirect '/'
 end
 
@@ -86,7 +86,7 @@ post '/*' do
     memo
   end
 
-  JsonFile.hash_to_json
+  JsonFile.hash_to_json(@json_data)
 
   redirect '/'
 end
