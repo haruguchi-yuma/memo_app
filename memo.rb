@@ -27,13 +27,13 @@ get '/new' do
   erb :new
 end
 
-get '/show/*' do
+get '/*' do
   @id = params[:splat]
   @json_data = JsonFile.json_to_hash
   erb :show
 end
 
-post '/create' do
+post '/memos' do
   @title = params[:title]
   @content = params[:content]
   @date = Date.today
@@ -49,7 +49,7 @@ post '/create' do
   erb :top
 end
 
-delete '/delete/*' do
+delete '/*' do
   @id = params[:splat]
   @json_data = JsonFile.json_to_hash
 
