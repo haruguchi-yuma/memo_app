@@ -2,16 +2,12 @@
   メモ詳細ページ
 </h2>
 <div class='text-center'>
-  <% @json_data["memo"].each do |memo| %>
-    <% memo.each do |k, v| %>
-      <% if k == @id[0] %>
-        <p>タイトル:<%= v["title"] %></p>
-        <p class="d-inline-block text-left">
-          内容:<%= v["content"].gsub(/\n/, "<br/>　　 ") %>
-        </p>
-        <p>作成日: <%= v["date"] %></P>
-      <% end %>
-    <% end %>
+  <% @result.each do |memo| %>
+    <p>タイトル:<%= memo["title"] %></p>
+    <p class="d-inline-block text-left">
+      内容:<%= memo["content"].gsub(/\n/, "<br/>　　 ") %>
+    </p>
+    <p>作成日: <%= memo["created_at"] %></P>
   <% end %>
 </div>
 

@@ -1,25 +1,44 @@
 require 'sinatra'
 require 'sinatra/reloader'
-require 'json'
-require 'securerandom'
-require "date"
+require 'pg'
 
-class JsonFile
-  def self.json_to_hash
-    File.open("views/memo.json") do |file|
-      JSON.load(file)
-    end
+class Memo
+  def self.connect_db
+    settings = {dbname: ENV['DB_NAME'], password: ENV['DB_PASS']}
+    PG.connect(settings)
   end
 
-  def self.hash_to_json(hash)
-    File.open("views/memo.json", "w") do |file| 
-      JSON.dump(hash, file) 
-    end
+  def self.index
+    connect_db.exec("select * from Memo;")
+  end
+
+  def self.show(id)
+    connect_db.exec("select * from Memo where id = $1;",[id])
+  end
+
+  def self.post_memo(title, content)
+    connect_db.exec("insert into Memo (title, content) values ($1, $2);",[title, content])
+  end
+
+  def self.delete_memo(id)
+    connect_db.exec("delete from Memo where id = $1",[id])
+  end
+
+  def self.patch_memo(id, title, content)
+    sql = <<~UPDATE
+      UPDATE Memo
+      SET title = $2,
+          content = $3
+      WHERE id = $1;
+    UPDATE
+    
+    connect_db.exec(sql,[id,title,content])
   end
 end
 
 get '/' do
-  @json_data = JsonFile.json_to_hash
+  @result = Memo.index
+
   erb :top
 end
 
@@ -29,64 +48,39 @@ end
 
 get '/*' do
   @id = params[:splat]
-  @json_data = JsonFile.json_to_hash
+  @result = Memo.show(*@id)
+  
   erb :show
 end
 
 post '/memos' do
   @title = params[:title]
   @content = params[:content]
-  @date = Date.today
-  
-  @json_data = JsonFile.json_to_hash
-  
-  id = SecureRandom.uuid
-  add_data = {"#{id}" => {"title" => @title, "content" => @content, "date" => @date.strftime("%Y年 %m月 %d日")}} 
-  @json_data["memo"] << add_data 
-  
-  JsonFile.hash_to_json(@json_data)
-  
+  Memo.post_memo(@title, @content)
+  @result = Memo.index
+
   erb :top
 end
 
 delete '/*' do
   @id = params[:splat]
-  @json_data = JsonFile.json_to_hash
-
-  @json_data["memo"].delete_if do |memo|
-    memo.include?(@id[0])
-  end
-
-  JsonFile.hash_to_json(@json_data)
-
+  Memo.delete_memo(*@id)
+  
   redirect '/'
 end
 
 patch '/*/edit' do
   @id = params[:splat]
-  @json_data = JsonFile.json_to_hash
+  @result = Memo.show(*@id)
+  
   erb :edit
 end
 
 post '/*' do
-  # ファイルの読み書き処理
   @id = params[:splat]
   @title = params[:title]
   @content = params[:content]
-  @date = Date.today
-
-  patch_data = {"title" => @title, "content" => @content , "date" => @date.strftime("%Y年 %m月 %d日")}
-
-  @json_data = JsonFile.json_to_hash
-
-  @json_data["memo"].each do |memo|
-    if memo.include?(@id[0])
-      memo[@id[0]] = patch_data
-    end
-    memo
-  end
-
-  JsonFile.hash_to_json(@json_data)
-
+  Memo.patch_memo(*@id, @title, @content)
+  
   redirect '/'
 end
