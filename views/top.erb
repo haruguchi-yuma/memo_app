@@ -1,9 +1,7 @@
 <div class='text-center'>
-  <% @json_data["memo"].each do |memo| %>
-    <% memo.each do |k, v| %>
-      <p>タイトル:<a href="/<%= k %>"> <%= v["title"] %></a></p>
-      <p class='mb-5'><%= "作成日:#{v["date"]}" %></p>
-    <% end %>
+  <% @result.each do |memo| %>
+    <p>タイトル:<a href="/<%= memo["id"] %>"> <%= memo["title"] %></a></p>
+    <p class='mb-5'><%= "作成日:#{memo["created_at"]}" %></p>
   <% end %>
 </div>
 
